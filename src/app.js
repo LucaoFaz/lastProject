@@ -11,19 +11,26 @@ app.use(express.json());
 const alunos = [
     {
         id: 1,
-        nome: "Aluno 1",
-        ra: "SC3031001",
-        nota1: 10.0,
-        nota2: 9.0
+        nome: "Asdrubal",
+        ra: "11111",
+        nota1: 8.5,
+        nota2: 9.5
     },
     {
         id: 2,
-        nome: "Aluno 2",
-        ra: "SC3031000",
-        nota1: 9.5,
-        nota2: 8.5
-    }
-]
+        nome: "Lupita",
+        ra: "22222",
+        nota1: 7.5,
+        nota2: 7
+    },
+    {
+        id: 3,
+        nome: "Zoroastro",
+        ra: "33333",
+        nota1: 3,
+        nota2: 4
+    },
+];
 
 // registar novo usuário
 app.post("/register", async (req, res) => {
@@ -127,14 +134,14 @@ app.delete("/alunos/:id", (req, res) =>{
 });
 
 function media(nota1, nota2) {
-    if (isNaN(nota1) || isNaN(nota2)) {
+    if (isNaN(nota1) || isNaN(nota2) || nota1 == null || nota2 == null) {
         return null;
     }
     return (nota1 + nota2) / 2;
 }
 
 //listar a media de todos os alunos
-app.get("/alunos/medias", (req, res) => {
+app.get("/alunos/medias", autenticar, (req, res) => {
     const medias = alunos.map(aluno => ({
         nome: aluno.nome,
         media: media(aluno.nota1, aluno.nota2)
