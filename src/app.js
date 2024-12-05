@@ -100,6 +100,31 @@ function buscaAluno(id) {
     return alunos.findIndex(aluno =>  aluno.id === Number(id));
 }
 
+function media(nota1, nota2) {
+    if (isNaN(nota1) || isNaN(nota2) || nota1 == null || nota2 == null) {
+        return null;
+    }
+    return (nota1 + nota2) / 2;
+}
+
+//listar a media de todos os alunos
+app.get("/alunos/medias", autenticar, (req, res) => {
+    const medias = alunos.map(aluno => ({
+        nome: aluno.nome,
+        media: media(aluno.nota1, aluno.nota2)
+    }));
+    res.status(200).json(medias);
+});
+
+//listar alunos aprovados e reprovados
+app.get("/alunos/aprovados", (req, res) => {
+    const aprovados = alunos.map(aluno => ({
+        nome: aluno.nome,
+        status: media(aluno.nota1, aluno.nota2) >= 6 ? "Aprovado" : "Reprovado"
+    }));
+    res.status(200).json(aprovados);
+});
+
 app.get("/alunos/:id", autenticar, (req, res) =>{
     const index = buscaAluno(req.params.id);
     if (index === -1) {
@@ -133,29 +158,6 @@ app.delete("/alunos/:id", (req, res) =>{
     console.log(alunos);
 });
 
-function media(nota1, nota2) {
-    if (isNaN(nota1) || isNaN(nota2) || nota1 == null || nota2 == null) {
-        return null;
-    }
-    return (nota1 + nota2) / 2;
-}
 
-//listar a media de todos os alunos
-app.get("/alunos/medias", autenticar, (req, res) => {
-    const medias = alunos.map(aluno => ({
-        nome: aluno.nome,
-        media: media(aluno.nota1, aluno.nota2)
-    }));
-    res.status(200).json(medias);
-});
-
-//listar alunos aprovados e reprovados
-app.get("/alunos/aprovados", (req, res) => {
-    const aprovados = alunos.map(aluno => ({
-        nome: aluno.nome,
-        status: media(aluno.nota1, aluno.nota2) >= 6 ? "Aprovado" : "Reprovado"
-    }));
-    res.status(200).json(aprovados);
-})
 
 export default app;
